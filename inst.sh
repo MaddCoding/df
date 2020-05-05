@@ -40,7 +40,7 @@ mkdir_directory() {
 	mkdir /home/kernel/.root/usr/share/X11/xkb/symbols
 	mkdir /home/kernel/Pictures
 	mkdir /home/kernel/Wallpapers
-
+	mkdir /home/kernel/.config/neofetch
 }
 
 install_dotfiles() {
@@ -53,7 +53,7 @@ install_dotfiles() {
 	cp -f mpv/input.conf /home/kernel/.config/mpv/input.conf
 	cp -f mpv/mpv.conf /home/kernel/.config/mpv/mpv.conf
 	cp -f polybar/config /home/kernel/.config/polybar/config
-	cp -f polybar/config /home/kernel/.config/polybar/launch
+	cp -f polybar/launch /home/kernel/.config/polybar/launch
 	chmod +x /home/kernel/.config/polybar/launch
 	cp -f ranger/rc.conf /home/kernel/.config/ranger/rc.conf
 	cp -f sxhkd/sxhkdrc /home/kernel/.config/sxhkd/sxhkdrc
@@ -107,12 +107,12 @@ install_core_packages() {
     sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
     chsh -s /bin/zsh kernel
     systemctl mask systemd-backlight@backlight:acpi_video0 systemd-backlight@backlight:acpi_video1
+    cd
     git clone https://github.com/Zay4ik/configs.git
     cd configs
     sudo cp neofetch/neofetch /usr/bin/neofetch
     sudo cp neofetch/config.conf ~/.config/neofetch/
     cd ..
-    rm -rf configs
     git clone https://github.com/popstas/zsh-command-time.git ~/.oh-my-zsh/custom/plugins/command-time
     sudo mkdir /usr/share/zsh/plugins
     cd /usr/share/zsh/plugins
@@ -168,25 +168,18 @@ install_intel_graphics() {
     sudo pacman --noconfirm --needed -S xf86-video-intel libva-intel-driver
 }
 
+install_amd_graphics() {
+    sudo pacman --noconfirm --needed -S xf86-video-ati
+}
+
 install_unikey() {
     sudo pacman --noconfirm --needed -S ibus-unikey
 }
 
-install_battery_saver() {
-    sudo pacman --noconfirm --needed -S tlp powertop
-    yay --noconfirm --needed -S intel-undervolt
-    sudo systemctl enable tlp.service
-    sudo systemctl enable tlp-sleep.service
-    sudo intel-undervolt apply
-    sudo systemctl enable intel-undervolt.service
-}
-
-create_ssh_key() {
-    email=$(whiptail --inputbox "Enter email for SSH key" 10 20 3>&1 1>&2 2>&3)
-    ssh-keygen -t rsa -b 4096 -C "${email}"
-    eval "$(ssh-agent -s)"
-    ssh-add ~/.ssh/id_rsa
-    # dotfiles remote set-url origin git@github.com:khuedoan98/dotfiles.git
+create_ssh_key(){
+    mkdir /home/kernel/.ssh
+    ssh-keygen -t rsa
+    ssh-add /home/kernel/.ssh/id_rsa
 }
 
 install_dev_tools() {
@@ -197,7 +190,7 @@ install_dev_tools() {
     sudo pacman --noconfirm --needed -S python-pipenv
     # Markdown to PDF
     sudo pacman --noconfirm --needed -S wkhtmltopd
-    curl -s https://raw.githubusercontent.com/khuedoan98/mdtopdf/master/mdtopdf > $HOME/.local/bin/mdtopdf
+    curl -s https://raw.githubusercontent.com/khuedoan98/mdtopdf/master/mdtopdf > /home/kernel/.local/bin/mdtopdf
     chmod +x $HOME/.local/bin/mdtopdf
 }
 
@@ -209,6 +202,7 @@ install_aur_helper
 install_core_packages
 install_extra_packages
 install_intel_graphics
+install_amd_graphics
 install_unikey
 install_battery_saver
 create_ssh_key
