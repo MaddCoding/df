@@ -39,7 +39,7 @@ mkdir_directory() {
 	mkdir /home/kernel/.root/usr/share/X11/xkb
 	mkdir /home/kernel/.root/usr/share/X11/xkb/symbols
 	mkdir /home/kernel/Pictures
-	mkdir /home/kernel/Wallpapers
+	mkdir /home/kernel/Pictures/Wallpapers
 	mkdir /home/kernel/.config/neofetch
 }
 
@@ -191,7 +191,7 @@ install_dev_tools() {
     # Markdown to PDF
     sudo pacman --noconfirm --needed -S wkhtmltopd
     curl -s https://raw.githubusercontent.com/khuedoan98/mdtopdf/master/mdtopdf > /home/kernel/.local/bin/mdtopdf
-    chmod +x $HOME/.local/bin/mdtopdf
+    chmod +x /home/kernel/.local/bin/mdtopdf
 }
 
 download_dotfiles 
